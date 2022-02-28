@@ -5,7 +5,7 @@ def input_students
     # create an empty array
     students = []
     # get the first name
-    name = gets.chomp
+    name = gets.gsub("\n","")
     #while the name is not empty, repeat this code
     while !name.empty? do
         puts "Please enter the student's cohort"
@@ -13,7 +13,8 @@ def input_students
         cohort = "unknown" if cohort.empty?
         #add the student has to the array
         students << {name: name, cohort: cohort}
-        puts "now we have #{students.count} students"
+        students.count == 1? s = "student" : s = "students"
+        puts "now we have #{students.count} #{s}"
         # gets another name from the user
         name = gets.chomp
     end
@@ -26,15 +27,27 @@ def print_header
 end
 
 def print_names(names)
-    # names.each_with_index do |student, index|
-    #     puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
-    # end
     i = 0
     until i == names.length do 
         student = names[i]
         print "#{i + 1}."
         puts (" #{student[:name]} (#{student[:cohort]} cohort)").center(50)
         i += 1
+    end
+end
+
+def print_by_cohort(names)
+    sort_by_cohort = {}
+    names.each do |student|
+        if !sort_by_cohort.include?(student[:cohort])
+            sort_by_cohort[student[:cohort]] = [student[:name]]
+        else
+            sort_by_cohort[student[:cohort]].push(student[:name])
+        end
+    end
+    sort_by_cohort.keys.each do |i|
+        puts "#{i} Cohort: "
+        sort_by_cohort[i].each { |name| puts name.center(30) }
     end
 end
 
@@ -45,5 +58,5 @@ end
 
 students = input_students
 print_header
-print_names(students)
+print_by_cohort(students)
 print_footer(students)
