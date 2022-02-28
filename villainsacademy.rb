@@ -1,3 +1,7 @@
+def interactive_menu
+    
+end
+
 
 def input_students
     puts "Please enter the names of the students"
@@ -6,12 +10,12 @@ def input_students
     students = []
     # get the first name
     name = gets.gsub("\n","")
-    #while the name is not empty, repeat this code
+    # while the name is not empty, repeat this code
     while !name.empty? do
         puts "Please enter the student's cohort"
         cohort = gets.chomp
         cohort = "unknown" if cohort.empty?
-        #add the student has to the array
+        # add the student has to the array
         students << {name: name, cohort: cohort}
         students.count == 1? s = "student" : s = "students"
         puts "now we have #{students.count} #{s}"
@@ -37,17 +41,19 @@ def print_names(names)
 end
 
 def print_by_cohort(names)
-    sort_by_cohort = {}
-    names.each do |student|
-        if !sort_by_cohort.include?(student[:cohort])
-            sort_by_cohort[student[:cohort]] = [student[:name]]
-        else
-            sort_by_cohort[student[:cohort]].push(student[:name])
+    if names.length < 0
+        sort_by_cohort = {}
+        names.each do |student|
+            if !sort_by_cohort.include?(student[:cohort])
+                sort_by_cohort[student[:cohort]] = [student[:name]]
+            else
+                sort_by_cohort[student[:cohort]].push(student[:name])
+            end
         end
-    end
-    sort_by_cohort.keys.each do |i|
-        puts "#{i} Cohort: "
-        sort_by_cohort[i].each { |name| puts name.center(30) }
+        sort_by_cohort.keys.each do |i|
+            puts "#{i} Cohort: "
+            sort_by_cohort[i].each { |name| puts name.center(30) }
+        end
     end
 end
 
