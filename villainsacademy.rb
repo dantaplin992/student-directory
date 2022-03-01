@@ -1,13 +1,18 @@
+require 'csv'
+
 @students = []
+@save_file_name = ""
 
 def interactive_menu
     loop do
     # Print the menu and ask the user what to do
+    puts "\n"
     puts "1. Input students"
     puts "2. Show students"
     puts "3. Save students"
     puts "4. Load students"
     puts "9. Exit"
+    puts "\n" 
     # Read the input and save it into a variable
     process(get_stdin)
     # Do what the user has asked
@@ -52,6 +57,7 @@ def input_students
         # gets another name from the user
         name = get_stdin
     end
+    puts "Students added successfully"
 end
 
 def print_header
@@ -91,31 +97,34 @@ def print_footer
 end
 
 def save_students
-    save_file = File.open("students.csv", "w")
-    @students.each do |student|
-        student_data = [student[:name], student[:cohort]]
-        csv_line = student_data.join(",")
-        save_file.puts csv_line
+    # File.open(get_file_name, "w") do |file|
+    #     @students.each do |student|
+    #         student_data = [student[:name], student[:cohort]]
+    #         csv_line = student_data.join(",")
+    #         file.puts csv_line
+    #     end
+    # end
+    CSV.open(@save_file_name, "w") do |file|
+        @students.each do |student|
+            student_data = [student[:name], student[:cohort]]
+            file.puts(student_data)
+        end
     end
-    save_file.close
+    puts "Students saved successfully"
 end
 
-def load_students(filename = "students.csv")
-    load_file = File.open(filename, "r")
-    load_file.readlines.each do |line|
-        name, cohort = line.chomp.split(",")
-        add_student(name, cohort)
-    end
-    load_file.close
+def load_students
+    @students = []
+    CSV.foreach(@save_file_name) { |row| add_student(row[0], row[1]) }
+    puts "#{@students.count} students loaded from #{@save_file_name}"
 end
 
 def try_load_students
-    ARGV.first.nil? ? filename = "students.csv" : filename = ARGV.first
-    if File.exists?(filename)
-        load_students(filename)
-        puts "#{@students.count} students loaded from #{filename}"
+    ARGV.first.nil? ? @save_file_name = get_file_name : @save_file_name = ARGV.first
+    if File.exists?(@save_file_name)
+        load_students
     else
-        puts "Sorry, #{filename} does not exist"
+        puts "Sorry, #{@save_file_name} does not exist"
         exit
     end
 end
@@ -132,5 +141,15 @@ def put_c(text)
     puts text.center(30)
 end
 
+def get_file_name
+    puts "Please enter the name of the save file"
+    return get_stdin
+end
+
 try_load_students
 interactive_menu
+
+# current_file = File.open(__FILE__, "r")
+# current_file.readlines.each do |line|
+#     puts line
+# end
