@@ -46,7 +46,7 @@ def input_students
         cohort = STDIN.gets.chomp
         cohort = "unknown" if cohort.empty?
         # add the student has to the array
-        @students << {name: name, cohort: cohort}
+        add_student(name, cohort)
         @students.count == 1? s = "student" : s = "students"
         puts "now we have #{@students.count} #{s}"
         # gets another name from the user
@@ -105,7 +105,7 @@ def load_students(filename = "students.csv")
     load_file = File.open(filename, "r")
     load_file.readlines.each do |line|
         name, cohort = line.chomp.split(",")
-        @students << { name: name, cohort: cohort}
+        add_student(name, cohort)
     end
     load_file.close
 end
@@ -120,6 +120,10 @@ def try_load_students
         puts "Sorry, #{filename} does not exist"
         exit
     end
+end
+
+def add_student(student_name, student_cohort)
+    @students << { name: student_name, cohort: student_cohort}
 end
 
 try_load_students
