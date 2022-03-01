@@ -9,7 +9,7 @@ def interactive_menu
     puts "4. Load students"
     puts "9. Exit"
     # Read the input and save it into a variable
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
     # Do what the user has asked
     
     # repeat from step 1
@@ -39,18 +39,18 @@ def input_students
     puts "Please enter the names of the students"
     puts "To finish, just hit return twice"
     # get the first name
-    name = gets.gsub("\n","")
+    name = STDIN.gets.gsub("\n","")
     # while the name is not empty, repeat this code
     while !name.empty? do
         puts "Please enter the student's cohort"
-        cohort = gets.chomp
+        cohort = STDIN.gets.chomp
         cohort = "unknown" if cohort.empty?
         # add the student has to the array
         @students << {name: name, cohort: cohort}
         @students.count == 1? s = "student" : s = "students"
         puts "now we have #{@students.count} #{s}"
         # gets another name from the user
-        name = gets.chomp
+        name = STDIN.gets.chomp
     end
 end
 
@@ -101,8 +101,8 @@ def save_students
     save_file.close
 end
 
-def load_students
-    load_file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+    load_file = File.open(filename, "r")
     load_file.readlines.each do |line|
         name, cohort = line.chomp.split(",")
         @students << { name: name, cohort: cohort}
@@ -110,4 +110,17 @@ def load_students
     load_file.close
 end
 
+def try_load_students
+    filename = ARGV.first
+    return if filename.nil?
+    if File.exists?(filename)
+        load_students(filename)
+        puts "#{@students.count} students loaded from #{filename}"
+    else
+        puts "Sorry, #{filename} does not exist"
+        exit
+    end
+end
+
+try_load_students
 interactive_menu
