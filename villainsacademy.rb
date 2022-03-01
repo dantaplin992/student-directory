@@ -5,6 +5,7 @@ def interactive_menu
     # Print the menu and ask the user what to do
     puts "1. Input students"
     puts "2. Show students"
+    puts "3. Save students"
     puts "9. Exit"
     # Read the input and save it into a variable
     process(gets.chomp)
@@ -22,6 +23,8 @@ def process(input)
         print_header
         print_by_cohort
         print_footer
+    when "3"
+        save_students
     when "9"
         exit
     else
@@ -83,6 +86,16 @@ end
 def print_footer
     print "Overall we have #{@students.count}"
     puts " great students"
+end
+
+def save_students
+    save_file = File.open("students.csv", "w")
+    @students.each do |student|
+        student_data = [student[:name], student[:cohort]]
+        csv_line = student_data.join(",")
+        save_file.puts csv_line
+    end
+    save_file.close
 end
 
 interactive_menu
