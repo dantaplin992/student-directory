@@ -6,6 +6,7 @@ def interactive_menu
     puts "1. Input students"
     puts "2. Show students"
     puts "3. Save students"
+    puts "4. Load students"
     puts "9. Exit"
     # Read the input and save it into a variable
     process(gets.chomp)
@@ -25,6 +26,8 @@ def process(input)
         print_footer
     when "3"
         save_students
+    when "4"
+        load_students
     when "9"
         exit
     else
@@ -96,6 +99,15 @@ def save_students
         save_file.puts csv_line
     end
     save_file.close
+end
+
+def load_students
+    load_file = File.open("students.csv", "r")
+    load_file.readlines.each do |line|
+        name, cohort = line.chomp.split(",")
+        @students << { name: name, cohort: cohort}
+    end
+    load_file.close
 end
 
 interactive_menu
