@@ -9,7 +9,7 @@ def interactive_menu
     puts "4. Load students"
     puts "9. Exit"
     # Read the input and save it into a variable
-    process(STDIN.gets.chomp)
+    process(get_stdin)
     # Do what the user has asked
     
     # repeat from step 1
@@ -39,24 +39,24 @@ def input_students
     puts "Please enter the names of the students"
     puts "To finish, just hit return twice"
     # get the first name
-    name = STDIN.gets.gsub("\n","")
+    name = get_stdin
     # while the name is not empty, repeat this code
     while !name.empty? do
         puts "Please enter the student's cohort"
-        cohort = STDIN.gets.chomp
+        cohort = get_stdin
         cohort = "unknown" if cohort.empty?
         # add the student has to the array
         add_student(name, cohort)
         @students.count == 1? s = "student" : s = "students"
         puts "now we have #{@students.count} #{s}"
         # gets another name from the user
-        name = STDIN.gets.chomp
+        name = get_stdin
     end
 end
 
 def print_header
-    puts "The students of Villains Academy"
-    puts "-----------"
+    put_c("\nThe students of Villains Academy")
+    put_c("-----------")
 end
 
 def print_names(names)
@@ -79,16 +79,15 @@ def print_by_cohort
                 sort_by_cohort[student[:cohort]].push(student[:name])
             end
         end
-        sort_by_cohort.keys.each do |i|
-            puts "#{i} Cohort: "
-            sort_by_cohort[i].each { |name| puts name.center(30) }
+        sort_by_cohort.each do |key, value|
+            put_c("#{key.capitalize} Cohort: ")
+            value.each { |name| put_c(name) }
         end
     end
 end
 
 def print_footer
-    print "Overall we have #{@students.count}"
-    puts " great students"
+    put_c("Overall we have #{@students.count} great students\n\n")
 end
 
 def save_students
@@ -111,8 +110,7 @@ def load_students(filename = "students.csv")
 end
 
 def try_load_students
-    filename = ARGV.first
-    return if filename.nil?
+    ARGV.first.nil? ? filename = "students.csv" : filename = ARGV.first
     if File.exists?(filename)
         load_students(filename)
         puts "#{@students.count} students loaded from #{filename}"
@@ -124,6 +122,14 @@ end
 
 def add_student(student_name, student_cohort)
     @students << { name: student_name, cohort: student_cohort}
+end
+
+def get_stdin
+    STDIN.gets.chomp
+end
+
+def put_c(text)
+    puts text.center(30)
 end
 
 try_load_students
